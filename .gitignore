@@ -35,3 +35,6 @@ compile_commands.json
 # === 例外（如果需要） ===
 # !build/release/readme.txt
 
+# JetBrains IDE
+.idea/*
+!.idea/runConfigurations/
