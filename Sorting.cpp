@@ -59,6 +59,61 @@ public:
         }
         return nums;
     }
+
+    //选择排序：依次寻找最小、第二小、第三小......最大的元素放置到相应位置
+    vector<int> Simple_Selection_Sort(vector<int> nums) {
+        int n = nums.size();
+        int min;
+        for (int i = 0; i < n; i++) {
+            min = i;        //设置初始最小下标为当前需要插入位置下标
+            for (int j = i + 1; j < n; j++) {
+                if (nums[j] < nums[min]) {
+                    min = j;    //不断更新最小下标
+                }
+            }
+            //将最小下标指向元素与需要插入位置的元素进行位置交换
+            int temp = nums[i];
+            nums[i] = nums[min];
+            nums[min] = temp;
+        }
+        return nums;
+    }
+
+    //插入排序(稳定)：不断将后面无序队列中的数插入到已经排好序的有序队列中，就像给卷子按成绩排序一样
+    vector<int> InsertSort(vector<int> nums) {
+        for (int i = 1; i < nums.size(); i++) {
+            int temp = nums[i];
+            int j = i - 1;
+            //新插入的数不断向前移动，直至恰当位置
+            for (; j >= 0 && nums[j] > temp; j--) {
+                nums[j + 1] = nums[j];
+            }
+            nums[j + 1] = temp;
+        }
+        return nums;
+    }
+
+    /*希尔排序(不稳定)：改进了插入排序，由于插入排序在数据量较小效率较高，
+     *所以我们设置增量对数据进行分组进行插入排序,并不断减小增量，最终实现整个数组的排序
+     */
+    vector<int> ShellSort(vector<int> nums) {
+        int n = nums.size();
+        int gap = n;
+
+        while (gap > 1) {
+            gap = gap/3 + 1;
+            for (int i = gap; i < n; i++) {
+                int temp = nums[i];
+                int j = i - gap;
+
+                for (; j >= 0 && nums[j] > temp; j = j - gap) {
+                    nums[j + gap] = nums[j];
+                }
+                nums[j + gap] = temp;
+            }
+        }
+        return nums;
+    }
 };
 
 int main() {
@@ -85,5 +140,23 @@ int main() {
     }
     cout << endl << "排序轮数：" << sort.rounds << endl;
     sort.rounds = 0;
+
+    vector<int> sorted4 = sort.Simple_Selection_Sort(a);
+    for (int i = 0; i <= a.size() - 1; i++) {
+        cout << sorted4[i] << " ";
+    }
+    cout << endl;
+
+    vector<int> sorted5 = sort.InsertSort(a);
+    for (int i = 0; i <= a.size() - 1; i++) {
+        cout << sorted5[i] << " ";
+    }
+    cout << endl;
+
+    vector<int> sorted6 = sort.ShellSort(a);
+    for (int i = 0; i <= a.size() - 1; i++) {
+        cout << sorted5[i] << " ";
+    }
+    cout << endl;
     return 0;
 }
