@@ -48,6 +48,9 @@ public:
     void insert(int theIndex, const T& theElement);
     void output(ostream& out) const;
 
+    void clear();
+    void push_back(const T& theElement);
+
 protected:
     void checkIndex(int theIndex) const;
     chainNode<T>* firstNode;
@@ -179,7 +182,9 @@ ostream& operator<<(ostream& out, const chain<T>& x) {
     return out;
 }
 
-//使用迭代器访问第i个元素时，只有第一次需要i次操作，之后迭代器会把上一步的信息留在自己那里，之后再访问可以1步操作直接完成
+/*使用迭代器访问第i个元素时，只有第一次需要i次操作，之后迭代器会把上一步的信息留在自己那里，之后再访问可以1步操作直接完成
+ *也就是说用迭代器访问多个元素时比每次从头访问更快
+ */
 template<class T>
 class iterator {
 public:
@@ -219,3 +224,39 @@ protected:
     chainNode<T>* node;
 };
 
+//为了实现抽象数据类型的一些基本操作，我们应当对现有的线性表进行一些ADT(Abstract Data Type)扩展
+template<class T>
+class extendedLinearList : linearList<T> {
+public:
+    virtual ~extendedLinearList() {}
+    virtual void clear() = 0;
+    virtual void push_back(const T& theElement) = 0;
+};
+
+
+
+template <class T>
+void chain<T>:: clear() {
+    while (firstNode != NULL) {
+        chainNode<T> nextNode = firstNode->next;
+        delete firstNode;
+        firstNode = nextNode;
+    }
+    listSize = 0;
+}
+
+//这里其实这么写没有任何意义，并没有设置尾节点以简化尾插操作，而依然是从头到尾遍历后再插入新节点
+template<class T>
+void chain<T>::push_back(const T &theElement) {
+    chainNode<T>* newNode = new chainNode<T>(theElement, NULL);
+    if (firstNode == NULL) {
+        firstNode = newNode;
+    }else {
+        chainNode<T>* currentNode = firstNode;
+        while (currentNode->next != NULL) {
+            currentNode = currentNode->next;
+        }
+        currentNode->next = newNode;
+    }
+    listSize++;
+}
